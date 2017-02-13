@@ -12,14 +12,14 @@ TARGET = QSettingsDialog
 VERSION = 1.0.0
 
 win32 {
-	QMAKE_TARGET_COMPANY = "Skycoder42"
-	QMAKE_TARGET_PRODUCT = "QSettingsDialog"
-	QMAKE_TARGET_DESCRIPTION = $$QMAKE_TARGET_PRODUCT
-	QMAKE_TARGET_COPYRIGHT = "Felix Barz"
+#	QMAKE_TARGET_COMPANY = "Skycoder42"
+#	QMAKE_TARGET_PRODUCT = "QSettingsDialog"
+#	QMAKE_TARGET_DESCRIPTION = $$QMAKE_TARGET_PRODUCT
+#	QMAKE_TARGET_COPYRIGHT = "Felix Barz"
 
 	CONFIG += skip_target_version_ext
 } else:mac {
-	QMAKE_TARGET_BUNDLE_PREFIX = "com.Skycoder42."
+#	QMAKE_TARGET_BUNDLE_PREFIX = "com.Skycoder42."
 	QMAKE_FRAMEWORK_BUNDLE_NAME = "QSettingsDialog"
 
 	CONFIG += lib_bundle
@@ -54,7 +54,8 @@ DISTFILES += \
     doc/images/structure_dialogui.svg \
     doc/images/structure_global.svg \
     doc/images/structure_loaders.svg \
-    doc/images/structure_variantwidgets.svg
+    doc/images/structure_variantwidgets.svg \
+    QSettingsDialog.pri
 
 include(./submodules/submodules.pri)
 #parts

@@ -1,4 +1,4 @@
-#include "qsettingsdialog.h"
+﻿#include "qsettingsdialog.h"
 #include "qsettingsdialog_p.h"
 #include "settingspathparser.h"
 #include "qsettingscontainer.h"
@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "qsettingswidgetdialogengine.h"
-
+#include <algorithm>
 #undef d
 #define d this->d_ptr
 
@@ -492,4 +492,37 @@ int QSettingsDialogPrivate::showDialog(bool asExec, QWidget *parentWindow)
 		instance->open();
 		return 0;
 	}
+}
+
+
+//===================
+
+std::list<QSettingsDialog::CbRec> QSettingsDialog::d_cbs;
+bool QSettingsDialog::reg(const QString & id,
+                          std::function<void(QSettingsDialog & dlg)> addEntry ) {
+    auto it = std::find_if(d_cbs.begin(), d_cbs.end(),
+                           [&id](QSettingsDialog::CbRec & rec)->bool{
+            return id == rec.id;});
+
+    if( it != d_cbs.end() )
+        return false;
+    d_cbs.push_back({id, addEntry});
+    return true;
+}
+
+void QSettingsDialog::unreg(const QString & id) {
+    auto it = std::find_if(d_cbs.begin(), d_cbs.end(),
+                           [&id](QSettingsDialog::CbRec & rec)->bool{
+            return id == rec.id;});
+
+    if( it != d_cbs.end() )
+        d_cbs.erase(it);
+    else
+        Q_ASSERT(0);
+}
+
+void QSettingsDialog::setup(QSettingsDialog & dlg) {
+    for(auto & rec : d_cbs) {
+        rec.cb(dlg);
+    }
 }

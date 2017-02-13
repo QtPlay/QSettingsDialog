@@ -12,6 +12,11 @@ TestEntry::TestEntry(bool optional, bool working, QVariant data) :
 	this->setTooltip("Baum == 42");
 }
 
+TestEntry::~TestEntry() {
+//    qDebug() << "delete entry";
+
+}
+
 bool TestEntry::load(QVariant & data, bool & userEdited)
 {
 	userEdited = !this->data.isNull();

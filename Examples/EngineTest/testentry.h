@@ -8,6 +8,8 @@ class TestEntry : public QSettingsLoaderEntry
 public:
 	TestEntry(bool optional, bool working, QVariant data = QVariant());
 
+    ~TestEntry();
+
     bool load(QVariant & data, bool & userEdited) override;
 	bool save(const QVariant &data) override;
 	bool reset() override;

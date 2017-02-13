@@ -1,4 +1,4 @@
-#ifndef QSETTINGSDIALOG_H
+﻿#ifndef QSETTINGSDIALOG_H
 #define QSETTINGSDIALOG_H
 
 #include "qsettingsdialog_global.h"
@@ -8,6 +8,8 @@
 #include <QScopedPointer>
 #include "exceptions.h"
 #include "qsettingsentry.h"
+#include <functional>
+
 class QSettingsDisplayEngine;
 class QSettingsContainer;
 
@@ -19,6 +21,11 @@ class QSETTINGSDIALOGSHARED_EXPORT QSettingsDialog : public QObject
 	friend class QSettingsDialogPrivate;
 
 public:
+
+    static bool reg(const QString & id, std::function<void(QSettingsDialog & dlg)> addEntry ) ;
+    static void unreg(const QString & id);
+    static void setup(QSettingsDialog & dlg);
+
 	//! Creates a new settings dialog with a parent
 	explicit QSettingsDialog(QObject *parent = nullptr);
 	//! Creates a new settings dialog with a parent and a custom display engine
@@ -119,6 +126,13 @@ private slots:
 
 private:
 	QScopedPointer<QSettingsDialogPrivate> d_ptr;
+
+    struct CbRec {
+        QString id;
+        std::function<void(QSettingsDialog & dlg)> cb;
+    };
+    static std::list<CbRec> d_cbs;
+
 };
 
 #endif // QSETTINGSDIALOG_H

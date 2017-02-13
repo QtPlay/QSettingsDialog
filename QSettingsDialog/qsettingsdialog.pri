@@ -1,34 +1,18 @@
-CONFIG(debug, debug|release): CONFIG += add_rpath
 
-win32 {
-	msvc {
-		contains(QT_ARCH, x86_64) {
-			CONFIG(release, debug|release): LIBS += -L$$PWD/msvc64/release/ -lQSettingsDialog
-			else:CONFIG(debug, debug|release): LIBS += -L$$PWD/msvc64/debug/ -lQSettingsDialog
-		} else {
-			CONFIG(release, debug|release): LIBS += -L$$PWD/msvc/release/ -lQSettingsDialog
-			else:CONFIG(debug, debug|release): LIBS += -L$$PWD/msvc/debug/ -lQSettingsDialog
-		}
-	}
-} else:mac:contains(QT_ARCH, x86_64) {
-	CONFIG(release, debug|release) {
-		QMAKE_LFLAGS += -F$$PWD/clang64/release/
-		add_rpath: QMAKE_LFLAGS += '-Wl,-rpath,\'$$PWD/clang64/release\''
-		LIBS += -F$$PWD/clang64/release/ -framework QSettingsDialog
-	} else:CONFIG(debug, debug|release) {
-		QMAKE_LFLAGS += -F$$PWD/clang64/debug/
-		add_rpath: QMAKE_LFLAGS += '-Wl,-rpath,\'$$PWD/clang64/debug\''
-		LIBS += -F$$PWD/clang64/debug/ -framework QSettingsDialog
-	}
-} else:unix:!mac:contains(QT_ARCH, x86_64) {
-	CONFIG(release, debug|release) {
-		add_rpath: QMAKE_LFLAGS += '-Wl,-rpath,\'$$PWD/gcc64/release\''
-		LIBS += -L$$PWD/gcc64/release/ -lQSettingsDialog
-	} else:CONFIG(debug, debug|release) {
-		add_rpath: QMAKE_LFLAGS += '-Wl,-rpath,\'$$PWD/gcc64/debug\''
-		LIBS += -L$$PWD/gcc64/debug/ -lQSettingsDialog
-	}
-}
 
-INCLUDEPATH += $$PWD/include
-DEPENDPATH += $$PWD/include
+INCLUDEPATH += $$PWD/QSettingsDialog
+INCLUDEPATH += $$PWD/QSettingsDialog/core
+INCLUDEPATH += $$PWD/QSettingsDialog/dialogui
+INCLUDEPATH += $$PWD/QSettingsDialog/loaders
+INCLUDEPATH += $$PWD/QSettingsDialog/variantwidgets
+
+win32:CONFIG(release, debug|release):
+    LIBS += -L$$OUT_PWD/../../QSettingsDialog/release/ -lQSettingsDialog
+else:win32:
+    CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../QSettingsDialog/debug/ -lQSettingsDialog
+else:mac {
+        QMAKE_LFLAGS += -F$$OUT_PWD/../../QSettingsDialog/
+        QMAKE_LFLAGS += '-Wl,-rpath,\'@executable_path/../../../../../QSettingsDialog\''
+        LIBS += -F$$OUT_PWD/../../QSettingsDialog/ -framework QSettingsDialog
+} else:unix:
+    LIBS += -L$$OUT_PWD/../../QSettingsDialog/ -lQSettingsDialog

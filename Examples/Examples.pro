@@ -6,4 +6,4 @@ SUBDIRS += \
     LoadersTest \
     SimpleExample
 
-OTHER_FILES += loadLib.pri
+OTHER_FILES += ./loadLib.pri
