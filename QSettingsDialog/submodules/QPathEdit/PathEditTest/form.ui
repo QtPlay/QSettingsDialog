@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>313</width>
+    <height>148</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="styleLabel">
+       <property name="text">
+        <string>style:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="styleComboBox">
+       <item>
+        <property name="text">
+         <string>SeperatedButton</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>JoinedButton</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>NoButton</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="dialogButtonIconLabel">
+       <property name="text">
+        <string>dialogButtonIcon:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPathEdit" name="dialogButtonIconPathEdit" native="true">
+       <property name="useCompleter" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="defaultDirectory" stdset="0">
+        <string/>
+       </property>
+       <property name="placeholder" stdset="0">
+        <string>Path to an icon</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="pathModeLabel">
+       <property name="text">
+        <string>pathMode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="pathModeComboBox">
+       <item>
+        <property name="text">
+         <string>ExisitingFile</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ExistingFolder</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>AnyFile</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="click_hereLabel">
+       <property name="text">
+        <string>click_here</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="click_hereLineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPathEdit" name="pathedit" native="true">
+     <property name="editable" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="placeholder" stdset="0">
+      <string>Demonstation path edit</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QPathEdit</class>
+   <extends>QWidget</extends>
+   <header>qpathedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
