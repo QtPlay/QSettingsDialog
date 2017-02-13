@@ -1,4 +1,4 @@
-#ifndef QSETTINGSLOADER_H
+﻿#ifndef QSETTINGSLOADER_H
 #define QSETTINGSLOADER_H
 
 #include "qsettingsdialog_global.h"
@@ -42,7 +42,7 @@ public:
 	bool isAsync() const final;
 
 	//! Will be called if settings need to be loaded form this loader
-	virtual bool load(QVariant outParam data, bool outParam userEdited) = 0;
+    virtual bool load(QVariant & data, bool & userEdited) = 0;
 	//! Will be called to save settings from the dialog to this loader
 	virtual bool save(const QVariant &data) = 0;
 	//! Will be called to reset the data this loader manages

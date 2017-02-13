@@ -1,4 +1,4 @@
-#include "settingsdisplaydialog.h"
+﻿#include "settingsdisplaydialog.h"
 #include "ui_settingsdisplaydialog.h"
 #include <dialogmaster.h>
 #include <QTabWidget>
@@ -105,7 +105,7 @@ int SettingsDisplayDialog::exec()
 void SettingsDisplayDialog::showEvent(QShowEvent *ev)
 {
 	this->currentMode = Load;
-	this->workingDialog = DialogMaster::createProgress(this, tr("Loading settings…"), 1);
+    this->workingDialog = DialogMaster::createProgress(this, QString(tr("Loading settings…")), 1);
 	this->workingDialog->setMaximum(0);
 	this->workingDialog->setAutoClose(false);
 	this->workingDialog->setAutoReset(false);

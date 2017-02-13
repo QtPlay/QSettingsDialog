@@ -1,4 +1,4 @@
-#ifndef QSETTINGSDIALOGENGINE_GLOBAL_H
+﻿#ifndef QSETTINGSDIALOGENGINE_GLOBAL_H
 #define QSETTINGSDIALOGENGINE_GLOBAL_H
 
 #include <QtCore/qglobal.h>
@@ -14,7 +14,7 @@
 #endif
 
 //! Simple define for "&" to mark parameters as out-parameter @ingroup grp_core
-#define outParam &
+//#define outParam &
 
 #ifdef QT_NO_DEBUG
 #define safe_cast static_cast

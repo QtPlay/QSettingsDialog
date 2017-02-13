@@ -19,7 +19,7 @@ public:
 	~QSettingsSettingsLoader();
 
 	// QSimpleSettingsLoader interface
-	bool load(QVariant outParam data, bool outParam userEdited) override;
+	bool load(QVariant & data, bool & userEdited) override;
 	bool save(const QVariant &data) override;
 	bool reset() override;
 

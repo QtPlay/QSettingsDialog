@@ -1,4 +1,4 @@
-#include "settingsflagschecklist.h"
+﻿#include "settingsflagschecklist.h"
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QCoreApplication>
@@ -11,8 +11,8 @@ SettingsFlagsCheckList::SettingsFlagsCheckList(const QMetaEnum &metaEnum, QWidge
 	m_translated(false)
 {
 	this->checkGroup->setExclusive(false);
-	connect(this->checkGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
-			this, &SettingsFlagsCheckList::updateFlags);
+    connect(this->checkGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(updateFlags(int)));
 
 	auto layout = new QVBoxLayout(this);
 	layout->setContentsMargins(QMargins());

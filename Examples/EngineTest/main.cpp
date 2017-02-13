@@ -1,4 +1,4 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QDebug>
 #include <QStyle>
 #include <QThread>
@@ -11,6 +11,48 @@
 #include "testentry.h"
 #include "delayedtestentry.h"
 #include "swidget.h"
+
+QSettingsLoaderEntry * createItem(const QString & n) {
+    class TestEntry : public QSettingsLoaderEntry
+    {
+    public:
+        TestEntry(bool optional, bool working,
+                  QVariant data = QVariant()) :
+            QSettingsLoaderEntry(working ? 0 : -1),
+            origData(data),
+            data(data)
+        {
+            this->setEntryName("name");
+            this->setOptional(optional);
+            this->setTooltip("Baum == 42");
+        }
+
+        bool load(QVariant & data,
+                  bool & userEdited) {
+            userEdited = !this->data.isNull();
+            data = this->data;
+            return true;
+        }
+
+        bool save(const QVariant &data){
+            qDebug() << "SAVING from" << this->data << "to" << data;
+            this->data = data;
+            return true;
+        }
+
+        bool reset() {
+            qDebug() << "RESETTING to" << this->origData;
+            this->data = this->origData;
+            return true;
+        }
+
+    private:
+        QVariant origData;
+        QVariant data;
+    };
+
+    return new TestEntry(false, false);
+};
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +80,8 @@ int main(int argc, char *argv[])
 	});
 
 	//container demo
+
+
 	dialog.setCategory("baum", "Baum == 42");
 	dialog.setSection(".");
 	dialog.setSection("__", "Is it true?", QIcon(), "some tooltop");
@@ -106,10 +150,10 @@ int main(int argc, char *argv[])
 	dialog.appendEntry(threaded);
 
 	//container test
-	dialog.setContainer("containerTest/./normal");
+    dialog.setContainer("containerTest/./normal");
 	dialog.appendEntry(new TestEntry(false, true));
 
-	QGroupSettingsContainer container(&dialog, "containerTest/./normal");
+    QGroupSettingsContainer container(&dialog, "containerTest/./normal");
 	container.appendEntry(new TestEntry(true, true));
 	auto rem = dialog.appendEntry(new TestEntry(false, true));
 	container.insertEntry(1, new TestEntry(false, false));
@@ -220,6 +264,13 @@ int main(int argc, char *argv[])
 	Q_ASSERT(reshowLayout.layoutType() == QSettingsLayout::EntryLayout);
 	reshowLayout.setName("Reshow");
 	reshowLayout.setTooltip("Will show the dialog a second time");
+
+        dialog.setCategory("MyLamd", "name");
+        dialog.setSection(".");
+        dialog.setGroup("42", 0, "Yes it is!", true, "Even here...");
+        dialog.appendEntry(createItem("A"));
+        dialog.appendEntry(createItem("B"));
+        dialog.appendEntry(createItem("C"));
 
 	dialog.openSettings();
 	dialog.execSettings();//will not work

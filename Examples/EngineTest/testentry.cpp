@@ -1,4 +1,4 @@
-#include "testentry.h"
+﻿#include "testentry.h"
 #include <QDebug>
 #include "swidget.h"
 
@@ -12,7 +12,7 @@ TestEntry::TestEntry(bool optional, bool working, QVariant data) :
 	this->setTooltip("Baum == 42");
 }
 
-bool TestEntry::load(QVariant outParam data, bool outParam userEdited)
+bool TestEntry::load(QVariant & data, bool & userEdited)
 {
 	userEdited = !this->data.isNull();
 	data = this->data;
