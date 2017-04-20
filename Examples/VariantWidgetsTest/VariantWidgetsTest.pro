@@ -19,3 +19,5 @@ HEADERS  += \
 	metawrapper.h
 
 include(../loadLib.pri)
+
+TRANSLATIONS += trans_VariantWidgetsTest_cn.ts

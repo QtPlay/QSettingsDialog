@@ -150,6 +150,16 @@ int main(int argc, char *argv[])
         threaded->moveToThread(&thread);
         dialog.appendEntry(threaded);
 
+        //
+        dialog.setContainer("my/.");
+        auto my = dialog.currentContainer();
+        my->appendEntry(new TestEntry(false, true));
+
+        dialog.setContainer("you/./dd");
+        auto you = dialog.currentSectionContainer();
+        you->appendEntry(new TestEntry(false, true));
+
+
         //container test
         dialog.setContainer("containerTest/./normal");
         dialog.appendEntry(new TestEntry(false, true));

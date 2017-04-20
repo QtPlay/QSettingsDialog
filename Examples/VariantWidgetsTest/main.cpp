@@ -1,4 +1,4 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QTranslator>
 #include <QDebug>
 #include <qsettingsdialog.h>
@@ -34,23 +34,9 @@ private:
 	QVariant value;
 };
 
-class MessageBoxWidget : public QSettingsWidget<QMessageBox>
-{
-public:
-	MessageBoxWidget(QWidget *parent = nullptr) :
-		QSettingsWidget(parent)
-	{
-		this->setWindowTitle("Message-Box");
-		this->setText("This is the simple message text");
-		this->setDefaultButton(QMessageBox::Ok);
-	}
+QSettingsDialog * ptrDlg = nullptr;
 
-	void setValue(const QVariant &) override {}
-	QVariant getValue() const override {
-		return QVariant();
-	}
-	void resetValue() override {}
-};
+
 
 class TranslatorInjector : public QTranslator
 {
@@ -69,6 +55,37 @@ public:
 #define ENTRY_PARAM(metatype, ...) new QSettingsEntry(metatype, new StateLoader(), QMetaType::typeName(metatype), false, #metatype, __VA_ARGS__)
 #define ENTRY_VALUE_PARAM(metatype, value, ...) new QSettingsEntry(metatype, new StateLoader(value), QMetaType::typeName(metatype), false, #metatype, __VA_ARGS__)
 
+class MessageBoxWidget : public QSettingsWidget<QMessageBox>
+{
+public:
+    MessageBoxWidget(QWidget *parent = nullptr) :
+        QSettingsWidget(parent)
+    {
+        this->setWindowTitle("Message-Box");
+        this->setText("This is the simple message text");
+        this->setDefaultButton(QMessageBox::Ok);
+    }
+
+    void setValue(const QVariant &) override {
+        qDebug() << "hello ---- Dialog was canceled ----";
+        static int i = 0;
+        i++;
+        i = i%2;
+//        auto v = value.value<UploadOpt::Method>();
+        switch(i) {
+        case 0 :
+            ptrDlg->appendEntry(ENTRY(QMetaType::QUuid));
+            break;
+        default:
+            ptrDlg->appendEntry(ENTRY(QMetaType::QFont));
+        }
+    }
+    QVariant getValue() const override {
+        return QVariant();
+    }
+    void resetValue() override {}
+};
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -76,9 +93,10 @@ int main(int argc, char *argv[])
 	QApplication::installTranslator(&tj);
 
 	REGISTER_FLAG_CONVERTERS(MetaWrapper::TestFlags);
-	QSettingsWidgetDialogEngine::registerGlobalWidgetType<QSettingsDialogWidget<MessageBoxWidget>>(424242);
+    QSettingsWidgetDialogEngine::registerGlobalWidgetType<QSettingsDialogWidget<MessageBoxWidget>>(qMetaTypeId<MetaWrapper::TestEnum>());
 
 	QSettingsDialog dialog;
+    ptrDlg = & dialog;
 
 	QObject::connect(&dialog, &QSettingsDialog::saved, [](bool close) {
 		qDebug() << "---- Save completed" << (close ? "with" : "without") << "closing ----";
@@ -131,7 +149,7 @@ int main(int argc, char *argv[])
 	dialog.appendEntry(ENTRY_VALUE_PARAM(QMetaType::QIcon, QIcon(":/QSettingsDialog/icons/add.ico"), "asQIcon", true));
 
 	dialog.setSection("dialogTest");
-	dialog.appendEntry(new QSettingsEntry(424242, new StateLoader(), "Message-Test"));
+    dialog.appendEntry(new QSettingsEntry(qMetaTypeId<MetaWrapper::TestEnum>(), new StateLoader(), "Message-Test"));
 
 	dialog.openSettings();
 	return a.exec();

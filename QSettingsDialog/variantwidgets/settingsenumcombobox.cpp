@@ -1,4 +1,4 @@
-#include "settingsenumcombobox.h"
+﻿#include "settingsenumcombobox.h"
 #include <QVBoxLayout>
 #include <QRadioButton>
 #include <QCoreApplication>
@@ -147,7 +147,11 @@ void SettingsEnumEditWrapper::initialize(const UiPropertyMap &uiPropertyMap)
 		else
 			this->current = new SettingsEnumComboBox(this->metaEnum, this);
 		this->layout()->addWidget(this->current->asWidget());
-	}
+    } else {
+        this->current->asWidget()->deleteLater();
+        this->current = new SettingsEnumComboBox(this->metaEnum, this);
+        this->layout()->addWidget(this->current->asWidget());
+    }
 
 	this->current->initialize(uiPropertyMap);
 }
