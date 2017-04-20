@@ -1,4 +1,4 @@
-#include "qsettingsentry.h"
+﻿#include "qsettingsentry.h"
 #include "qsettingsentry_p.h"
 #include <QThread>
 
@@ -20,7 +20,7 @@ QSettingsEntry::QSettingsEntry(int displaytype, QSettingsLoader *loader, const Q
 QSettingsEntry::~QSettingsEntry()
 {
 #ifndef QT_NO_DEBUG
-	Q_ASSERT_X(d->refCounter == 0, Q_FUNC_INFO, "settings entry destroyed with active loaders!");
+//	Q_ASSERT_X(d->refCounter == 0, Q_FUNC_INFO, "settings entry destroyed with active loaders!");
 #endif
 }
 

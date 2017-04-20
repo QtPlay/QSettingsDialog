@@ -1,4 +1,4 @@
-#ifndef QSETTINGSWIDGET_H
+﻿#ifndef QSETTINGSWIDGET_H
 #define QSETTINGSWIDGET_H
 
 #include "qsettingsdialog_global.h"
@@ -38,6 +38,7 @@ public:
 		return regex.pattern().isEmpty();
 	}
 
+    int id = -1;
 private:
 	QVariant changedCache;
 };

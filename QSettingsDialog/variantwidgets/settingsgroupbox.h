@@ -1,4 +1,4 @@
-#ifndef SETTINGSGROUPBOX_H
+﻿#ifndef SETTINGSGROUPBOX_H
 #define SETTINGSGROUPBOX_H
 
 #include "qsettingsgroupwidget.h"
@@ -19,6 +19,7 @@ public:
 
 protected:
 	void addWidgetWithLabel(QWidget *label, QWidget *content) override;
+    void takeWidgetWithLabel(QWidget *label, QWidget *content) override;
 
 private:
 	QFormLayout *layout;

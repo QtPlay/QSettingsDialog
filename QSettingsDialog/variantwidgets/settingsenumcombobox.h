@@ -6,7 +6,7 @@
 #include <QMetaEnum>
 #include <QButtonGroup>
 
-class SettingsEnumComboBox : public QSettingsWidget<QComboBox>
+class QSETTINGSDIALOGSHARED_EXPORT SettingsEnumComboBox : public QSettingsWidget<QComboBox>
 {
 	Q_OBJECT
 

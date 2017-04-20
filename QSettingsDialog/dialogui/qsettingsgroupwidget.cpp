@@ -1,4 +1,4 @@
-#include "qsettingsgroupwidget.h"
+﻿#include "qsettingsgroupwidget.h"
 #include <QCheckBox>
 #include <QLabel>
 #include "settingsdisplaydialog.h"
@@ -30,6 +30,17 @@ void QSettingsGroupWidgetBase::addWidgetRaw(QSharedPointer<QSettingsEntry> entry
 		content->setEnabled(!entry->isOptional());
 
 	this->addWidgetWithLabel(label, content);
+}
+
+void QSettingsGroupWidgetBase::rmWidgetRaw(QSharedPointer<QSettingsEntry> entry, QWidget *content, bool hasError) {
+    Q_UNUSED(hasError);
+    Q_UNUSED(content);
+    auto it = this->entryMap.find(entry);
+    Q_ASSERT(it != this->entryMap.end());
+    this->takeWidgetWithLabel(it->first, it->second->asWidget());
+    delete it->first;
+    delete it->second;
+    this->entryMap.erase(it);
 }
 
 void QSettingsGroupWidgetBase::setEntryChecked(QSharedPointer<QSettingsEntry> entry, bool checked)

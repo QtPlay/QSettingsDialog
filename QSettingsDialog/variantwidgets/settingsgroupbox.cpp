@@ -1,4 +1,4 @@
-#include "settingsgroupbox.h"
+﻿#include "settingsgroupbox.h"
 #include "checkinghelper.h"
 
 SettingsGroupBox::SettingsGroupBox(QWidget *parent) :
@@ -41,4 +41,9 @@ void SettingsGroupBox::setChecked(bool checked)
 void SettingsGroupBox::addWidgetWithLabel(QWidget *label, QWidget *content)
 {
 	this->layout->addRow(label, content);
+}
+
+void SettingsGroupBox::takeWidgetWithLabel(QWidget *label, QWidget *content) {
+    auto indexL = this->layout->indexOf(label); this->layout->takeAt(indexL);
+    auto indexF = this->layout->indexOf(content); this->layout->takeAt(indexF);
 }

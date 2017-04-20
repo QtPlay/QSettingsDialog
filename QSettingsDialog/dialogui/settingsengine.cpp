@@ -1,4 +1,4 @@
-#include "settingsengine.h"
+﻿#include "settingsengine.h"
 
 SettingsEngine::SettingsEngine(QObject *parent) :
 	QObject(parent),
@@ -45,6 +45,25 @@ void SettingsEngine::addEntry(QSharedPointer<QSettingsEntry> entry, QSettingsWid
 									   loader->simple()
 								   });
 	}
+}
+
+void SettingsEngine::rmEntry(QSharedPointer<QSettingsEntry> entry,
+              QSettingsWidgetBase *currentWidget,
+              CheckingHelper *checkingHelper) {
+    auto loader = entry->getLoader();
+    if( loader->isAsync()) {
+        auto it = std::find_if(this->asyncEntries.begin(), this->asyncEntries.end(), [entry](const EntryInfo<QAsyncSettingsLoader> & item){
+            return item.entry == entry;
+        });
+        Q_ASSERT(it != this->asyncEntries.end());
+        this->asyncEntries.erase(it);
+    } else {
+        auto it = std::find_if(this->simpleEntries.begin(), this->simpleEntries.end(), [entry](const EntryInfo<QSimpleSettingsLoader> & item){
+            return item.entry == entry;
+        });
+        Q_ASSERT(it != this->simpleEntries.end());
+        this->simpleEntries.erase(it);
+    }
 }
 
 void SettingsEngine::startLoading()

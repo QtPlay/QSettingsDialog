@@ -1,4 +1,4 @@
-#ifndef QSETTINGSENTRY_H
+﻿#ifndef QSETTINGSENTRY_H
 #define QSETTINGSENTRY_H
 
 #include "qsettingsdialog_global.h"
@@ -60,6 +60,8 @@ public:
 	//! Will be called to remove a reference to the loader this entry holds
 	virtual void freeLoader(QSettingsLoader *loader);//TODO required?
 
+public :
+    int id = -1;
 private:
 	QScopedPointer<QSettingsEntryPrivate> d_ptr;
 };

@@ -55,7 +55,8 @@ public:
 #define ENTRY_PARAM(metatype, ...) new QSettingsEntry(metatype, new StateLoader(), QMetaType::typeName(metatype), false, #metatype, __VA_ARGS__)
 #define ENTRY_VALUE_PARAM(metatype, value, ...) new QSettingsEntry(metatype, new StateLoader(value), QMetaType::typeName(metatype), false, #metatype, __VA_ARGS__)
 
-class MessageBoxWidget : public QSettingsWidget<QMessageBox>
+#include <QPushButton>
+class MessageBoxWidget : public QSettingsWidget<QPushButton>
 {
 public:
     MessageBoxWidget(QWidget *parent = nullptr) :
@@ -63,22 +64,50 @@ public:
     {
         this->setWindowTitle("Message-Box");
         this->setText("This is the simple message text");
-        this->setDefaultButton(QMessageBox::Ok);
+//        this->setDefaultButton(QMessageBox::Ok);
+
+        connect(this, &QPushButton::clicked, [this]{
+            static int i = 0;
+            qDebug("button clicked = %d", i++ ) ;
+            static QList<int> ids ;
+            static bool s = true;
+            for(auto id : ids)
+                ptrDlg->removeEntry(id);
+            ids.clear();
+    //        auto v = value.value<UploadOpt::Method>();
+           if(!s) {
+                ptrDlg->setCategory("rt");
+                ptrDlg->setSection("dialogTest");
+                ptrDlg->setGroup("Group1");
+                ids << ptrDlg->appendEntry(ENTRY(QMetaType::QUuid));
+                qDebug("button clicked = %d, bool =%b", i, s ) ;
+          } else {
+                ptrDlg->setCategory("rt");
+                ptrDlg->setSection("dialogTest");
+                ptrDlg->setGroup("Group2");
+                ids << ptrDlg->appendEntry(ENTRY(QMetaType::QStringList));
+                qDebug("button clicked = %d, bool =%b", i, s ) ;
+            }
+           s = !s;
+        });
     }
 
     void setValue(const QVariant &) override {
-        qDebug() << "hello ---- Dialog was canceled ----";
-        static int i = 0;
-        i++;
-        i = i%2;
-//        auto v = value.value<UploadOpt::Method>();
-        switch(i) {
-        case 0 :
-            ptrDlg->appendEntry(ENTRY(QMetaType::QUuid));
-            break;
-        default:
-            ptrDlg->appendEntry(ENTRY(QMetaType::QFont));
-        }
+//        qDebug() << "hello ---- Dialog was canceled ----";
+//        static int i = 0;
+//        i++;
+//        i = i%2;
+//        static int id = -1 ;
+//        if( id > 0)
+//            ptrDlg->removeEntry(id);
+////        auto v = value.value<UploadOpt::Method>();
+//        switch(i) {
+//        case 0 :
+//            id = ptrDlg->appendEntry(ENTRY(QMetaType::QUuid));
+//            break;
+//        default:
+//            id = ptrDlg->appendEntry(ENTRY(QMetaType::QFont));
+//        }
     }
     QVariant getValue() const override {
         return QVariant();
@@ -93,7 +122,7 @@ int main(int argc, char *argv[])
 	QApplication::installTranslator(&tj);
 
 	REGISTER_FLAG_CONVERTERS(MetaWrapper::TestFlags);
-    QSettingsWidgetDialogEngine::registerGlobalWidgetType<QSettingsDialogWidget<MessageBoxWidget>>(qMetaTypeId<MetaWrapper::TestEnum>());
+    QSettingsWidgetDialogEngine::registerGlobalWidgetType<MessageBoxWidget>(qMetaTypeId<MetaWrapper::TestEnum>());
 
 	QSettingsDialog dialog;
     ptrDlg = & dialog;
@@ -141,6 +170,7 @@ int main(int argc, char *argv[])
 	dialog.appendEntry(ENTRY_VALUE_PARAM(qMetaTypeId<MetaWrapper::TestFlags>(), MetaWrapper::Flag3, "translated", false));
 	dialog.appendEntry(ENTRY_VALUE(qMetaTypeId<MetaWrapper::TestFlags>(), QVariant::fromValue<MetaWrapper::TestFlags>(MetaWrapper::Flag8)));
 
+    dialog.setCategory("rt");
 	dialog.setSection("extendedTypes");
 	dialog.appendEntry(ENTRY_VALUE(qMetaTypeId<FilePath>(), FilePath("C:/baum.txt")));
 	dialog.appendEntry(ENTRY_VALUE(qMetaTypeId<IntRange>(), IntRange(42)));

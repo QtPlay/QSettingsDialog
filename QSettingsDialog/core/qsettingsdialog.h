@@ -124,6 +124,9 @@ signals:
 private slots:
 	void completed(bool close = true);
 
+public :
+    void asureVisable(int id);
+
 private:
 	QScopedPointer<QSettingsDialogPrivate> d_ptr;
 

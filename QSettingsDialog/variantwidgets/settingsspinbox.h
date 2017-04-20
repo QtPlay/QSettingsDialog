@@ -28,6 +28,8 @@ class SettingsDoubleSpinBox : public QSettingsWidget<QDoubleSpinBox>
 public:
 	SettingsDoubleSpinBox(QWidget *parent = nullptr);
 
+    void initialize(const UiPropertyMap &uiPropertyMap) override;
+
 	// QSettingsWidgetBase interface
 	void setValue(const QVariant &value) override;
 	QVariant getValue() const override;

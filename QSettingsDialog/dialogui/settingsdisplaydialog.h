@@ -1,4 +1,4 @@
-#ifndef SETTINGSDISPLAYDIALOG_H
+﻿#ifndef SETTINGSDISPLAYDIALOG_H
 #define SETTINGSDISPLAYDIALOG_H
 
 #include <QDialog>
@@ -40,7 +40,10 @@ public:
 
 	void setParentWindow(QWidget *parent) override;
 	void setParentWindow(QWindow *parent) override;
-	void createUi(const QSharedPointer<SettingsRoot> &elementRoot) override;
+    void createUi(QSharedPointer<SettingsRoot> elementRoot) override;
+
+    virtual void addEntry(int id, const QVector<QString> & path, QSharedPointer<QSettingsEntry>);
+    virtual void rmEntry(int id, const QVector<QString> & path,  QSharedPointer<QSettingsEntry>);
 
 public slots:
 	void open() override;
@@ -91,8 +94,10 @@ private:
 	void createCategory(const QSharedPointer<SettingsCategory> &category);
 	void createSection(const QSharedPointer<SettingsSection> &section, QTabWidget *tabWidget);
 	void createGroup(const QSharedPointer<SettingsGroup> &group, QWidget *contentWidget, QFormLayout *layout);
-	void createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout);
-	void createEntry(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group);
+    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout);
+    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group);
+    void rmEntryWdg(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout);
+    void rmEntryWdg(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group);
 
 	QWidget *createErrorWidget(QWidget *parent);
 
@@ -101,6 +106,13 @@ private:
 	bool searchInSection(const QRegularExpression &regex, QWidget *contentWidget);
 	bool searchInGroup(const QRegularExpression &regex, QSettingsGroupWidgetBase *groupWidget);
 	bool searchInEntry(const QRegularExpression &regex, QWidget *label, QSettingsWidgetBase *content);
+
+protected:
+    QSharedPointer<SettingsRoot> elementRoot;
+    std::map<QString, QTabWidget * > categories;
+    std::map<QString, QFormLayout *> sections;
+    std::map<QString, QSettingsGroupWidgetBase *> groups;
+    std::map<int, std::pair<QWidget*, QWidget *> >entryWdgs;
 };
 
 #endif // SETTINGSDISPLAYDIALOG_H

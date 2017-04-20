@@ -1,4 +1,4 @@
-#ifndef QSETTINGSGROUPWIDGET_H
+﻿#ifndef QSETTINGSGROUPWIDGET_H
 #define QSETTINGSGROUPWIDGET_H
 
 #include "qsettingsdialog_global.h"
@@ -32,8 +32,9 @@ public:
 	virtual void setChecked(bool checked) = 0;
 
 	//! Adds a widget to the dialog in a raw way.
-	virtual void addWidgetRaw(QSharedPointer<QSettingsEntry> entry, QWidget *content, bool hasError);
-	//! Sets an entry within the dialog to be checked
+    virtual void addWidgetRaw(QSharedPointer<QSettingsEntry> entry, QWidget *content, bool hasError);
+    virtual void rmWidgetRaw(QSharedPointer<QSettingsEntry> entry, QWidget *content, bool hasError);
+    //! Sets an entry within the dialog to be checked
 	virtual void setEntryChecked(QSharedPointer<QSettingsEntry> entry, bool checked);
 	//! Enables or disables an entry (and it's label) in the group
 	virtual void setEntryLabelEnabled(QSharedPointer<QSettingsEntry> entry, bool enabled);
@@ -45,7 +46,8 @@ public:
 
 protected:
 	//! Simple way to add widgets with a label to the group
-	virtual void addWidgetWithLabel(QWidget *label, QWidget *content) = 0;
+    virtual void addWidgetWithLabel(QWidget *label, QWidget *content) = 0;
+    virtual void takeWidgetWithLabel(QWidget *label, QWidget *content) = 0;
 
 	//! Defines one "element" within the group - label and edit widget
 	typedef QPair<QWidget*, QSettingsWidgetBase*> GroupElement;

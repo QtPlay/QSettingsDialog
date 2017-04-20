@@ -1,4 +1,4 @@
-#ifndef CONTAINERELEMENT_H
+﻿#ifndef CONTAINERELEMENT_H
 #define CONTAINERELEMENT_H
 
 #include <QString>
@@ -13,6 +13,7 @@
 class QSettingsContainer;
 struct SettingsGroup
 {
+    QString id;
 	int displayId;
 	QString name;
 	QString tooltip;
@@ -21,7 +22,8 @@ struct SettingsGroup
 	SortedMap<int, QSettingsEntry> entries;
 
 	inline SettingsGroup(int displayId, const QString &name) :
-		displayId(displayId),
+        id(name),
+        displayId(displayId),
 		name(name),
 		tooltip(),
 		isOptional(false),
@@ -31,6 +33,7 @@ struct SettingsGroup
 
 struct SettingsSection
 {
+    QString id;
 	QString name;
 	QIcon icon;
 	QString tooltip;
@@ -38,19 +41,23 @@ struct SettingsSection
 	SpecialGroupMap groups;
 
 	inline SettingsSection(const QString &name) :
-		name(name),
+        id(name),
+        name(name),
 		icon(),
 		tooltip(),
 		groups()
 	{}
 
 	static inline QSharedPointer<SettingsSection> createDefaultSection() {
-		return QSharedPointer<SettingsSection>(new SettingsSection(QSettingsDialog::tr("General")));
+        auto section = new SettingsSection(".");
+        section->name = QSettingsDialog::tr("General");
+        return QSharedPointer<SettingsSection>(section);
 	}
 };
 
 struct SettingsCategory
 {
+    QString id;
 	QString name;
 	QIcon icon;
 	QString tooltip;
@@ -59,7 +66,8 @@ struct SettingsCategory
 	SortedMap<QString, SettingsSection> sections;
 
 	inline SettingsCategory(const QString &name) :
-		name(name),
+        id(name),
+        name(name),
 		icon(),
 		tooltip(),
 		defaultSection(),
@@ -67,7 +75,8 @@ struct SettingsCategory
 	{}
 
 	static inline QSharedPointer<SettingsCategory> createDefaultCategory() {
-		auto cat = new SettingsCategory(QSettingsDialog::tr("General Settings"));
+        auto cat = new SettingsCategory(QString("."));
+        cat->name = QSettingsDialog::tr("General Settings");
 		cat->icon = QIcon(QStringLiteral(":/QSettingsDialog/icons/settings.ico"));
 		return QSharedPointer<SettingsCategory>(cat);
 	}

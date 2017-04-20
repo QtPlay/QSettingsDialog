@@ -60,7 +60,7 @@ void SettingsEnumComboBox::setTranslated(bool translated)
 	emit translatedChanged(translated);
 }
 
-
+const int offset = 100;
 
 SettingsEnumRadioList::SettingsEnumRadioList(const QMetaEnum &metaEnum, QWidget *parent) :
 	QSettingsWidget(parent),
@@ -77,7 +77,8 @@ SettingsEnumRadioList::SettingsEnumRadioList(const QMetaEnum &metaEnum, QWidget 
 	for(int i = 0; i < this->metaEnum.keyCount(); i++) {
 		auto box = new QRadioButton(QString::fromLocal8Bit(this->metaEnum.key(i)), this);
 		layout->addWidget(box);
-		this->checkGroup->addButton(box, this->metaEnum.value(i));
+        auto v = this->metaEnum.value(i) + offset;
+        this->checkGroup->addButton(box, v);
 	}
 
 	this->setTranslated(true);
@@ -85,13 +86,13 @@ SettingsEnumRadioList::SettingsEnumRadioList(const QMetaEnum &metaEnum, QWidget 
 
 void SettingsEnumRadioList::setValue(const QVariant &value)
 {
-	auto id = value.toInt();
+    auto id = value.toInt() + offset;
 	this->checkGroup->button(id)->setChecked(true);
 }
 
 QVariant SettingsEnumRadioList::getValue() const
 {
-	return this->checkGroup->checkedId();
+    return this->checkGroup->checkedId() - offset;
 }
 
 void SettingsEnumRadioList::resetValue()
@@ -116,8 +117,8 @@ void SettingsEnumRadioList::setTranslated(bool translated)
 			text = QCoreApplication::translate(this->metaEnum.name(), this->metaEnum.key(i));
 		else
 			text = QString::fromLocal8Bit(this->metaEnum.key(i));
-
-		auto box = this->checkGroup->button(this->metaEnum.value(i));
+        auto v = this->metaEnum.value(i) + offset;
+        auto box = this->checkGroup->button(v);
 		box->setText(text);
 	}
 
@@ -141,7 +142,7 @@ void SettingsEnumEditWrapper::initialize(const UiPropertyMap &uiPropertyMap)
 {
 	if(uiPropertyMap.contains(QStringLiteral("showAsRadio"))) {
 		auto asRadio = uiPropertyMap.value(QStringLiteral("showAsRadio")).toBool();
-		this->current->asWidget()->deleteLater();
+        if( this->current ) delete current; //this->current->asWidget()->deleteLater();
 		if(asRadio)
 			this->current = new SettingsEnumRadioList(this->metaEnum, this);
 		else

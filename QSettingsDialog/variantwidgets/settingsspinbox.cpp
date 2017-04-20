@@ -25,6 +25,10 @@ SettingsDoubleSpinBox::SettingsDoubleSpinBox(QWidget *parent) :
 	QSettingsWidget(parent)
 {}
 
+void SettingsDoubleSpinBox::initialize(const UiPropertyMap &uiPropertyMap) {
+    QSettingsWidget<QDoubleSpinBox>::initialize(uiPropertyMap);
+}
+
 void SettingsDoubleSpinBox::setValue(const QVariant &value)
 {
 	this->QDoubleSpinBox::setValue(value.toDouble());

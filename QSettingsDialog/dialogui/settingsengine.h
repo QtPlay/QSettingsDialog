@@ -1,4 +1,4 @@
-#ifndef SETTINGSENGINE_H
+﻿#ifndef SETTINGSENGINE_H
 #define SETTINGSENGINE_H
 
 #include <QObject>
@@ -18,6 +18,10 @@ public:
 	void addEntry(QSharedPointer<QSettingsEntry> entry,
 				  QSettingsWidgetBase *currentWidget,
 				  CheckingHelper *checkingHelper);
+
+    void rmEntry(QSharedPointer<QSettingsEntry> entry,
+                  QSettingsWidgetBase *currentWidget,
+                  CheckingHelper *checkingHelper);
 
 public slots:
 	void startLoading();
@@ -41,8 +45,8 @@ private slots:
 private:
 	struct EntryInfoBase {
 		QSharedPointer<QSettingsEntry> entry;
-		QSettingsWidgetBase *currentWidget;
-		CheckingHelper *checkingHelper;
+        QSettingsWidgetBase *currentWidget ;
+        CheckingHelper *checkingHelper ;
 	};
 	template<class TLoader>
 	struct EntryInfo : public EntryInfoBase {

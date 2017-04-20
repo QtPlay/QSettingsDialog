@@ -1,10 +1,10 @@
-#ifndef QSETTINGSDISPLAYENGINE_H
+﻿#ifndef QSETTINGSDISPLAYENGINE_H
 #define QSETTINGSDISPLAYENGINE_H
 
 #include "qsettingsdialog_global.h"
 class QWindow;
 struct SettingsRoot;
-
+class QSettingsEntry;
 //! @intuse An interface for a display instance that can be controlled by the dialog @ingroup grp_core
 class QSETTINGSDIALOGSHARED_EXPORT QSettingsDisplayInstance
 {
@@ -17,8 +17,10 @@ public:
 	//! Sets the parent window of this instance
 	virtual void setParentWindow(QWindow *parent) = 0;
 	//! Passes the current settings structure, to create the ui
-	virtual void createUi(const QSharedPointer<SettingsRoot> &rootElement) = 0;
+    virtual void createUi( QSharedPointer<SettingsRoot> rootElement) = 0;
 
+    virtual void addEntry(int id, const QVector<QString> & path, QSharedPointer<QSettingsEntry>) = 0;
+    virtual void rmEntry(int id, const QVector<QString> & path,  QSharedPointer<QSettingsEntry>) = 0;
 public slots:
 	//! Opens the dialog non blocking
 	virtual void open() = 0;

@@ -96,7 +96,7 @@ void QSettingsDialog::setGroup(const QString &id, int displayId, const QString &
 {
 	auto element = d->getGroup(id);
 	Q_ASSERT(!element.isNull());
-	if(!id.isEmpty())
+    if(!id.isEmpty())
 		d->groupId = id;
 
 	if(displayId != -1)
@@ -200,14 +200,18 @@ int QSettingsDialog::appendEntry(QSettingsEntry *entry)
 		Q_ASSERT(!section.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		section->groups.append(id, entry);
+        this->asureVisable(id);
 		return id;
 	} else {
 		auto group = d->getGroup();
 		Q_ASSERT(!group.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		group->entries.append(id, entry);
+        this->asureVisable(id);
 		return id;
 	}
 }
@@ -220,7 +224,9 @@ int QSettingsDialog::appendEntry(const QString &containerPath, QSettingsEntry *e
 		Q_ASSERT(!section.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		section->groups.append(id, entry);
+        this->asureVisable(id);
 		return id;
 	} else {
 		Q_ASSERT(elements.size() == 3);
@@ -229,7 +235,9 @@ int QSettingsDialog::appendEntry(const QString &containerPath, QSettingsEntry *e
 		Q_ASSERT(!group.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		group->entries.append(id, entry);
+        this->asureVisable(id);
 		return id;
 	}
 }
@@ -241,14 +249,18 @@ int QSettingsDialog::prependEntry(QSettingsEntry *entry)
 		Q_ASSERT(!section.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		section->groups.prepend(id, entry);
+        this->asureVisable(id);
 		return id;
 	} else {
 		auto group = d->getGroup();
 		Q_ASSERT(!group.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		group->entries.prepend(id, entry);
+        this->asureVisable(id);
 		return id;
 	}
 }
@@ -261,7 +273,9 @@ int QSettingsDialog::prependEntry(const QString &containerPath, QSettingsEntry *
 		Q_ASSERT(!section.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		section->groups.prepend(id, entry);
+        this->asureVisable(id);
 		return id;
 	} else {
 		Q_ASSERT(elements.size() == 3);
@@ -270,7 +284,9 @@ int QSettingsDialog::prependEntry(const QString &containerPath, QSettingsEntry *
 		Q_ASSERT(!group.isNull());
 
 		auto id = d->getNextId();
+        entry->id = id;
 		group->entries.prepend(id, entry);
+        this->asureVisable(id);
 		return id;
 	}
 }
@@ -299,10 +315,16 @@ QString QSettingsDialog::getEntryPath(int id) const
 }
 
 bool QSettingsDialog::removeEntry(int id)
-{
+{    
 	auto path = d->findEntryPath(id);
+    if(path.isEmpty())
+        return true;
 	auto elements = SettingsPathParser::parseFullPath(path);
-
+    if( d->currentDialog ) {
+        QSettingsDisplayInstance * instance = dynamic_cast<QSettingsDisplayInstance*>(d->currentDialog.data());
+        Q_ASSERT(instance);
+        instance->rmEntry(id, elements, this->getEntry(id));
+    }
 	if(elements.size() == 2) {
 		auto section = d->getSection(elements[1], elements[0]);
 		Q_ASSERT(!section.isNull());
@@ -337,6 +359,21 @@ void QSettingsDialog::completed(bool close)
 		d->currentDialog->deleteLater();
 		d->currentDialog = nullptr;
 	}
+}
+
+void QSettingsDialog::asureVisable(int id) {
+    if( d->currentDialog ) {
+        //get recd
+        //create ui
+        //add to dialog
+        QSettingsDisplayInstance * instance = dynamic_cast<QSettingsDisplayInstance*>(d->currentDialog.data());
+        Q_ASSERT(instance);
+        //先找到item，看能拿到什么信息，然后再打界面元素
+        auto path = d->findEntryPath(id);
+        auto entry = this->getEntry(id);
+        auto elements = SettingsPathParser::parseFullPath(path);
+        instance->addEntry(id, elements, entry);
+    }
 }
 
 
