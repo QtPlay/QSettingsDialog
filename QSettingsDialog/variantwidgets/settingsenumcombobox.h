@@ -28,7 +28,7 @@ public slots:
 signals:
 	void translatedChanged(bool translated);
 
-private:
+protected:
 	QMetaEnum metaEnum;
 	bool m_translated;
 };
@@ -55,7 +55,7 @@ public slots:
 signals:
 	void translatedChanged(bool translated);
 
-private:
+protected:
 	QMetaEnum metaEnum;
 	QButtonGroup *checkGroup;
 	bool m_translated;

@@ -13,6 +13,7 @@
 #include "qsettingsdialog.h"
 #include "settingspathparser.h"
 #include "qsettingsdialog_p.h"
+#include <QDebug>
 
 #define TAB_CONTENT_NAME "tabContent_371342666"
 
@@ -342,7 +343,7 @@ int SettingsDisplayDialog::calcSpacing(Qt::Orientation orientation)
 	return baseSize;
 }
 
-void SettingsDisplayDialog::createCategory(const QSharedPointer<SettingsCategory> &category)
+void SettingsDisplayDialog::createCategory(const QSharedPointer<SettingsCategory> &category, bool grpOnly)
 {
 	auto item = new QListWidgetItem();
 	item->setText(category->name);
@@ -359,12 +360,14 @@ void SettingsDisplayDialog::createCategory(const QSharedPointer<SettingsCategory
 
 	if(category->defaultSection)
 		this->createSection(category->defaultSection, tab);
+
+    if(!grpOnly)
 	foreach(auto section, category->sections)
 		this->createSection(section.second, tab);
 
 }
 #include <QtGlobal>
-void SettingsDisplayDialog::createSection(const QSharedPointer<SettingsSection> &section, QTabWidget *tabWidget)
+void SettingsDisplayDialog::createSection(const QSharedPointer<SettingsSection> &section, QTabWidget *tabWidget, bool secOnly)
 {
 	auto scrollArea = new QScrollArea();
 	scrollArea->setWidgetResizable(true);
@@ -394,6 +397,7 @@ void SettingsDisplayDialog::createSection(const QSharedPointer<SettingsSection> 
 	auto index = tabWidget->addTab(scrollArea, section->icon, section->name);
 	tabWidget->tabBar()->setTabToolTip(index, section->tooltip.isNull() ? section->name : section->tooltip);
 
+    if(!secOnly)
 	foreach(auto group, section->groups) {
         if(group.first.type() == QVariant::Int)
 			this->createEntry(group.second.second, scrollContent, layout);
@@ -402,7 +406,8 @@ void SettingsDisplayDialog::createSection(const QSharedPointer<SettingsSection> 
 	}
 }
 
-void SettingsDisplayDialog::createGroup(const QSharedPointer<SettingsGroup> &group, QWidget *contentWidget, QFormLayout *layout)
+void SettingsDisplayDialog::createGroup(const QSharedPointer<SettingsGroup> &group, QWidget *contentWidget,
+                                        QFormLayout *layout, bool grpOnly )
 {
 	auto groupWidget = this->dialogEngine->createGroupWidget(group->displayId, contentWidget);
 	groupWidget->setName(group->name);
@@ -415,6 +420,7 @@ void SettingsDisplayDialog::createGroup(const QSharedPointer<SettingsGroup> &gro
     groupWidget->asWidget()->setWindowFilePath(path);
     groups[path] = groupWidget;
 
+    if( !grpOnly )
 	foreach(auto entry, group->entries)
 		this->createEntry(entry.second, groupWidget);
 
@@ -422,7 +428,7 @@ void SettingsDisplayDialog::createGroup(const QSharedPointer<SettingsGroup> &gro
 		groupWidget->setChecked(false);
 }
 
-void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout)
+void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout, bool force)
 {
 	QWidget *content = nullptr;
 	auto settingsWidget = this->dialogEngine->createWidget(entry->displaytype(), entry->uiProperties(), sectionWidget);
@@ -458,8 +464,31 @@ void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &en
 
 	layout->addRow(label, content);
     entryWdgs[entry->id] = std::make_pair(label, content);
-	if(settingsWidget)
+
+    if(!settingsWidget)
+        qWarning( " no widget");
+    if(settingsWidget) {
 		this->engine->addEntry(entry, settingsWidget, labelAsHelper);
+        if(force) {
+            bool edited = false;
+            QVariant data;
+            auto loader = dynamic_cast<QSimpleSettingsLoader*>(entry->getLoader());
+            if(!loader)
+                qWarning( "no loader");
+            if( loader ) {
+                auto ok = loader->load(data, edited);
+                qWarning( entry->entryName().toStdString().c_str());
+                qWarning(data.toString().toStdString().c_str());
+                if(ok && data.isValid())
+                    settingsWidget->setValue(data);
+                else
+                    settingsWidget->resetValue();
+                settingsWidget->resetValueChanged();
+                if( edited )
+                    labelAsHelper->doCheck();
+            }
+        }
+    }
 }
 
 
@@ -474,7 +503,8 @@ void SettingsDisplayDialog::rmEntryWdg(const QSharedPointer<QSettingsEntry> &ent
     this->engine->rmEntry(entry, nullptr, nullptr);
 }
 
-void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group)
+void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &entry,
+                                        QSettingsGroupWidgetBase *group, bool force)
 {
 	auto groupWidget = group->asWidget();
 	QWidget *content = nullptr;
@@ -486,12 +516,36 @@ void SettingsDisplayDialog::createEntry(const QSharedPointer<QSettingsEntry> &en
 		content = this->createErrorWidget(groupWidget);
 
 	group->addWidgetRaw(entry, content, !settingsWidget);
-	if(settingsWidget)
-		this->engine->addEntry(entry, settingsWidget, new GroupCheckingHelper(group, entry));
+//    if(!settingsWidget)
+//        qWarning( "no setting widgets");
+    if(settingsWidget) {
+        auto labelAsHelper = new GroupCheckingHelper(group, entry);
+        this->engine->addEntry(entry, settingsWidget, labelAsHelper);
+        if(force) {
+            bool edited = false;
+            QVariant data;
+            auto loader = dynamic_cast<QSimpleSettingsLoader*>(entry->getLoader());
+//            if(!loader)
+//                qWarning( "no loader");
+            if( loader ) {
+                auto ok = loader->load(data, edited);
+//                qWarning( entry->entryName().toStdString().c_str());
+//                qWarning(data.toString().toStdString().c_str());
+                if(ok && data.isValid())
+                    settingsWidget->setValue(data);
+                else
+                    settingsWidget->resetValue();
+                settingsWidget->resetValueChanged();
+                if( edited )
+                    labelAsHelper->doCheck();
+            }
+        }
+    }
 }
 
 void SettingsDisplayDialog::rmEntryWdg(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group) {
     group->rmWidgetRaw(entry, nullptr, false);
+    this->engine->rmEntry(entry, nullptr, nullptr);
 }
 
 QWidget *SettingsDisplayDialog::createErrorWidget(QWidget *parent)
@@ -514,8 +568,10 @@ QWidget *SettingsDisplayDialog::createErrorWidget(QWidget *parent)
 	return content;
 }
 
-void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, QSharedPointer<QSettingsEntry> entry) {
-
+void SettingsDisplayDialog::addEntry(int id,
+                                     const QVector<QString> & elements,
+                                     QSharedPointer<QSettingsEntry> entry) {
+//    qWarning()<< "addEntry = " << entry->entryName();
     //create category widget, section wdg, group wdg
     QSharedPointer<SettingsCategory> cat;
     auto catIt = categories.find(QSettingsDialog::createContainerPath(elements[0]));
@@ -523,8 +579,8 @@ void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, 
         foreach( auto  category, elementRoot->categories){
             if( category.second->id == elements[0]) {
                 cat = category.second;
-                this->createCategory(category.second);
-                return;
+                this->createCategory(category.second, true);
+                ;
             }
         }
         if( cat.isNull() ) {
@@ -534,6 +590,7 @@ void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, 
         foreach( auto  category, elementRoot->categories){
             if( category.second->id == elements[0]) {
                 cat = category.second;
+                break;
             }
         }
         if( cat.isNull())
@@ -549,18 +606,19 @@ void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, 
         foreach(auto  section, cat->sections) {
             if( section.second->id == elements[1]) {
                 sec = section.second;
-                this->createSection(sec, tab);
-                return;
+                this->createSection(sec, tab, true);
+                ;
             }
         }
         if( sec.isNull() ) {
             sec=cat->defaultSection;
-            this->createSection(sec, tab);
+            this->createSection(sec, tab, true);
         }
     } else {
         foreach(auto  section, cat->sections) {
             if( section.second->id == elements[1]) {
                 sec = section.second;
+                break;
             }
         }
         if( sec.isNull())
@@ -578,8 +636,8 @@ void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, 
         if( groupIt == groups.end() ){
             if( sec->groups.contains(elements[2])) {
                 grp = sec->groups.valueId(elements[2]);
-                this->createGroup(grp, scrollContent, layout);
-                return;
+                this->createGroup(grp, scrollContent, layout, true);
+                ;
             }/*
             if( sec->groups.size())
             foreach(auto group, sec->groups) {
@@ -588,30 +646,40 @@ void SettingsDisplayDialog::addEntry(int id, const QVector<QString> & elements, 
                     this->createGroup(group.second.first, scrollContent, layout);
                 }
             }*/
-        } else {
-            ;
         }
+//        else {
+//            grp = groupIt->second;
+//        }
+        grp = sec->groups.valueId(elements[2]);
     }
 
     if(elements.size() == 2) {
-        if(!sec.data()) {
+        if(sec.data()) {
             auto index = QSettingsDialog::createContainerPath(elements[0], elements[1]);
             auto it = sections.find(index);
             Q_ASSERT(it != sections.end());
             auto layout = it->second;
             auto widget = layout->parentWidget();
             Q_ASSERT(layout && widget);
-            createEntry(entry, widget, layout);
+            createEntry(entry, widget, layout, true);
         }
     } else {
-        if(!grp.data()) {
+        if(grp.data()) {
             Q_ASSERT(elements.size() == 3);
             auto index = QSettingsDialog::createContainerPath(elements[0], elements[1], elements[2]);
             auto it = groups.find(index);
             Q_ASSERT(it != groups.end());
             auto group = it->second;
             Q_ASSERT(group);
-            createEntry(entry, group);
+            createEntry(entry, group, true);
+        } else {
+            auto index = QSettingsDialog::createContainerPath(elements[0], elements[1]);
+            auto it = sections.find(index);
+            Q_ASSERT(it != sections.end());
+            auto layout = it->second;
+            auto widget = layout->parentWidget();
+            Q_ASSERT(layout && widget);
+            createEntry(entry, widget, layout, true);
         }
     }
 }

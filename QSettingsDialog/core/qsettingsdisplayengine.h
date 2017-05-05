@@ -19,7 +19,8 @@ public:
 	//! Passes the current settings structure, to create the ui
     virtual void createUi( QSharedPointer<SettingsRoot> rootElement) = 0;
 
-    virtual void addEntry(int id, const QVector<QString> & path, QSharedPointer<QSettingsEntry>) = 0;
+    virtual void addEntry(int id, const QVector<QString> & path,
+                          QSharedPointer<QSettingsEntry>) = 0;
     virtual void rmEntry(int id, const QVector<QString> & path,  QSharedPointer<QSettingsEntry>) = 0;
 public slots:
 	//! Opens the dialog non blocking

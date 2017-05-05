@@ -1,4 +1,4 @@
-#ifndef QPATHEDIT_H
+﻿#ifndef QPATHEDIT_H
 #define QPATHEDIT_H
 
 #include <QWidget>
@@ -166,6 +166,14 @@ private:
 
 	QStringList modelFilters(const QStringList &normalFilters);
 	QIcon getDefaultIcon();
+};
+
+class DESIGNER_PLUGIN_EXPORT QDirEdit : public QPathEdit
+{
+    Q_OBJECT
+public:
+    //! Constructs a new QPathEdit widget. The mode will be QPathEdit::ExistingFile
+    explicit QDirEdit(QWidget *parent = NULL, Style style = SeperatedButton);
 };
 
 #endif // QPATHEDIT_H

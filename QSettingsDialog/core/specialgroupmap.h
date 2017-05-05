@@ -71,7 +71,7 @@ public:
 	{
 		friend class SpecialGroupMap;
 	public:
-		typename SpecialGroupMap::Entry operator*();
+        /*typename*/ SpecialGroupMap::Entry operator*();
 		bool operator!=(const const_iterator& other) const;
 		const_iterator &operator++();
 

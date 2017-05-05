@@ -1,4 +1,4 @@
-#include "variantwidgetsregistrator.h"
+﻿#include "variantwidgetsregistrator.h"
 #include "qsettingsextendedtypes.h"
 #include "qsettingswidgetdialogengine.h"
 #include "settingsenumwidgetfactory.h"
@@ -77,16 +77,19 @@ void VariantWidgetsRegistrator::registerEnumFactories()
 
 void VariantWidgetsRegistrator::registerExtendedVariantWidgets()
 {
-	auto pathId = qRegisterMetaType<FilePath>();
-	auto rangeId = qRegisterMetaType<IntRange>();
+    auto pathId = qRegisterMetaType<FilePath>();
+    auto dirId = qRegisterMetaType<DirPath>();
+    auto rangeId = qRegisterMetaType<IntRange>();
 	auto htmlId = qRegisterMetaType<HtmlText>();
 
-	REGISTER_TYPE_CONVERTERS(FilePath, QString);
-	REGISTER_TYPE_CONVERTERS(IntRange, int);
+    REGISTER_TYPE_CONVERTERS(FilePath, QString);
+    REGISTER_TYPE_CONVERTERS(DirPath, QString);
+    REGISTER_TYPE_CONVERTERS(IntRange, int);
 	REGISTER_TYPE_CONVERTERS(HtmlText, QString);
 
-	QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsPathEdit>(pathId);
-	QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsSlider>(rangeId);
+    QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsPathEdit>(pathId);
+    QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsDirEdit>(dirId);
+    QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsSlider2>(rangeId);
 	QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsRichTextEdit>(htmlId);
 
 	QSettingsWidgetDialogEngine::registerGlobalWidgetType<SettingsIconEdit>(QMetaType::QIcon);

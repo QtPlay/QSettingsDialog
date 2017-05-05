@@ -1,4 +1,4 @@
-#include "settingspathedit.h"
+﻿#include "settingspathedit.h"
 #include <QImageReader>
 #include <QStandardPaths>
 
@@ -23,7 +23,26 @@ void SettingsPathEdit::resetValue()
 	this->clear();
 }
 
+SettingsDirEdit::SettingsDirEdit(QWidget *parent) :
+    QSettingsWidget(parent)
+{
+    this->setEditable(true);
+}
 
+void SettingsDirEdit::setValue(const QVariant &value)
+{
+    this->setPath(value.toString(), true);
+}
+
+QVariant SettingsDirEdit::getValue() const
+{
+    return this->path();
+}
+
+void SettingsDirEdit::resetValue()
+{
+    this->clear();
+}
 
 SettingsIconEdit::SettingsIconEdit(QWidget *parent) :
 	QSettingsWidget(parent)

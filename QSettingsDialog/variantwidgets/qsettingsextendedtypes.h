@@ -1,4 +1,4 @@
-#ifndef QSETTINGSEXTENDEDTYPES_H
+﻿#ifndef QSETTINGSEXTENDEDTYPES_H
 #define QSETTINGSEXTENDEDTYPES_H
 
 #include <QString>
@@ -19,6 +19,15 @@ public:
 	operator QVariant() {
 		return (QString)*this;
 	}
+};
+
+class DirPath : public FilePath {
+public:
+    //! Creates a FilePath by passing the arguments to the QString constructor
+    template <typename... Args>
+    DirPath(Args... args) :
+        FilePath(args...)
+    {}
 };
 
 //! A custom type that represents an integer range (is an int) @ingroup grp_variantwidgets
@@ -67,6 +76,7 @@ public:
 };
 
 Q_DECLARE_METATYPE(FilePath)
+Q_DECLARE_METATYPE(DirPath)
 Q_DECLARE_METATYPE(IntRange)
 Q_DECLARE_METATYPE(HtmlText)
 

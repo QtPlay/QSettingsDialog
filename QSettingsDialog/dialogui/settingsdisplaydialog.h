@@ -42,7 +42,8 @@ public:
 	void setParentWindow(QWindow *parent) override;
     void createUi(QSharedPointer<SettingsRoot> elementRoot) override;
 
-    virtual void addEntry(int id, const QVector<QString> & path, QSharedPointer<QSettingsEntry>);
+    virtual void addEntry(int id, const QVector<QString> & path,
+                          QSharedPointer<QSettingsEntry>);
     virtual void rmEntry(int id, const QVector<QString> & path,  QSharedPointer<QSettingsEntry>);
 
 public slots:
@@ -91,11 +92,11 @@ private:
 
 	int calcSpacing(Qt::Orientation orientation);
 
-	void createCategory(const QSharedPointer<SettingsCategory> &category);
-	void createSection(const QSharedPointer<SettingsSection> &section, QTabWidget *tabWidget);
-	void createGroup(const QSharedPointer<SettingsGroup> &group, QWidget *contentWidget, QFormLayout *layout);
-    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout);
-    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group);
+    void createCategory(const QSharedPointer<SettingsCategory> &category, bool grpOnly= false);
+    void createSection(const QSharedPointer<SettingsSection> &section, QTabWidget *tabWidget, bool secOnly = false);
+    void createGroup(const QSharedPointer<SettingsGroup> &group, QWidget *contentWidget, QFormLayout *layout, bool grpOnly = false);
+    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout, bool force = false);
+    void createEntry(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group, bool force = false);
     void rmEntryWdg(const QSharedPointer<QSettingsEntry> &entry, QWidget *sectionWidget, QFormLayout *layout);
     void rmEntryWdg(const QSharedPointer<QSettingsEntry> &entry, QSettingsGroupWidgetBase *group);
 

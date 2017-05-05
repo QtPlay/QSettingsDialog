@@ -36,6 +36,10 @@ QPathEdit::QPathEdit(QWidget *parent, QPathEdit::Style style) :
 	QPathEdit(ExistingFile, parent, style)
 {}
 
+QDirEdit::QDirEdit(QWidget *parent, QPathEdit::Style style) :
+    QPathEdit(ExistingFolder, parent, style)
+{}
+
 QPathEdit::QPathEdit(QPathEdit::PathMode pathMode, QWidget *parent, QPathEdit::Style style) :
 	QWidget(parent),
 	edit(new QLineEdit(this)),
@@ -50,7 +54,7 @@ QPathEdit::QPathEdit(QPathEdit::PathMode pathMode, QWidget *parent, QPathEdit::S
 	defaultDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)),
 	allowEmpty(true),
 	toolButton(new QToolButton(this)),
-	dialogAction(new QAction(this->getDefaultIcon(), tr("Open File-Dialog"), this)),
+    dialogAction(new QAction(QIcon(":/qpathedit/icons/open-file-icon.png"), "...", this)),
 	hasCustomIcon(false)
 {
 	//setup dialog
@@ -393,6 +397,7 @@ QStringList QPathEdit::modelFilters(const QStringList &normalFilters)
 
 QIcon QPathEdit::getDefaultIcon()
 {
+    return QIcon();
 	switch(this->uiStyle) {
 	case SeperatedButton: {
 		QImage image(16, 16, QImage::Format_ARGB32);

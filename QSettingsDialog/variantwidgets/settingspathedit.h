@@ -1,4 +1,4 @@
-#ifndef SETTINGSPATHEDIT_H
+﻿#ifndef SETTINGSPATHEDIT_H
 #define SETTINGSPATHEDIT_H
 
 #include "qsettingswidget.h"
@@ -12,6 +12,16 @@ public:
 	void setValue(const QVariant &value) override;
 	QVariant getValue() const override;
 	void resetValue() override;
+};
+
+class SettingsDirEdit : public QSettingsWidget<QDirEdit>
+{
+public:
+    SettingsDirEdit(QWidget *parent = nullptr);
+
+    void setValue(const QVariant &value) override;
+    QVariant getValue() const override;
+    void resetValue() override;
 };
 
 class SettingsIconEdit : public QSettingsWidget<QPathEdit>
