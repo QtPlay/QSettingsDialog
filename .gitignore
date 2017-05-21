@@ -34,3 +34,6 @@ Makefile*
 *.qmlproject.user.*
 *.vpp.bak*
 /.vscode/
+/.settings/
+*.cproject
+*.project
